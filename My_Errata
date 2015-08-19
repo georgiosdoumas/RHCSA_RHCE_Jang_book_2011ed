@@ -1,0 +1,11 @@
+Chapter 10
+page 17 Regulate Access to SSH
+First error : the textbook is missing the line that will create the new chain , so I put (just after :OUTPUT ACCEPT)
+-N SSH_CHAIN (or --new SSH_CHAIN)
+Before the -A FORWARD , I put the line 
+-A INPUT -i eth0 -p tcp -m tcp --dport 22 -m state --state NEW -j SSH_CHAIN
+and before the COMMIT line , I put 
+-A SSH_CHAIN -i eth0 -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 3 --rttl --name SSH -j DROP
+I got no errors in the 
+/etc/init.d/iptables restart
+But no change in behavior , I was still able to open 4 ssh sessions in less than a minute.
